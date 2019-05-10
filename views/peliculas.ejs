@@ -1,0 +1,32 @@
+<% include parciales/encabezado %>
+
+<div class="container">
+    <header class="jumbotron">
+        <div class="container">
+            <h1>Bienvenido a Películas</h1>
+            <p>Vea nuestra colección de películas</p>
+            <p>
+                <a href="/peliculas/nueva" class="btn btn-primary btn-lg">Agregar nueva película</a>
+            </p>
+        </div>
+    </header>
+    <div class="row text-center" style="display:flex; flex-wrap:wrap;">
+        <% peliculas.forEach(function(pelicula){ %>
+        <div class="col-md-3 col-sm-6">
+            <div class="thumbnail">
+                <img src="<%= pelicula.imagen %>">
+                <div class="caption">
+                    <h4><%= pelicula.nombre %></h4>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+</div>
+
+<div class="container">
+    <strong class="text-center">
+        <% include parciales/pie %>
+    </strong>
+
+</div>

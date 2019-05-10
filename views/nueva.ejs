@@ -1,0 +1,30 @@
+<% include parciales/encabezado %>
+<div class="container">
+    <div class="row">
+            <h1 style="text-align:center;">Agregar una nueva película</h1>
+        <div style="width:30%; margin:25px auto;">
+            
+            <form action="/peliculas" method="post">
+
+                <div class="form-group">
+                    <input class="form-control" type="text" name="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="imagen" placeholder="URL de la imagen">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary btn-block">Guardar!</button>
+                </div>
+
+            </form>
+            <a href="/peliculas">Ir Atrás</a>
+        </div>
+
+    </div>
+
+</div>
+<div class="container">
+    <strong class="text-center">
+        <% include parciales/pie %>
+    </strong>
+</div>
