@@ -2,21 +2,13 @@ var express = require("express");
 var app = express();
 var bodyParse = require("body-parser");
 var mongoose = require("mongoose");
+var Pelicula = require("./model/peliculas");
+var poblarDB = require("./semillas");
 
+poblarDB();
 mongoose.connect("mongodb://localhost/peliculas");
 
-// Configuracion del Schema
-var peliculaSchema = new mongoose.Schema({
-  nombre: String,
-  imagen: String,
-  descripcion:{
-    type: String,
-    required: [true,'La descripcion es obligatoria!']
-  }
- 
-});
 
-var Pelicula = mongoose.model("Pelicula", peliculaSchema);
 
 // Pelicula.create({ 
 //   nombre: "X-Men: Apocalypse", 
@@ -48,7 +40,7 @@ app.post("/peliculas", function (req, res) {
   var descripcion = req.body.descripcion;
   var NuevaPelicula = { nombre: nombre, imagen: imagen, descripcion: descripcion };
   // Crear un nuevo registro de película y guardarlo en la base de datos
-  Pelicula.create(NuevaPelicula, function(err, recienCreada){
+  Pelicula.create(NuevaPelicula, function (err, recienCreada) {
     if (err) {
       console.log(err);
     } else {
@@ -64,25 +56,28 @@ app.get("/peliculas/nueva", function (req, res) {
 
 app.get("/peliculas", function (req, res) {
   //Obtener todas las peliculas de la base de datos
-  Pelicula.find({}, function(err, todasPeliculas){
+  Pelicula.find({}, function (err, todasPeliculas) {
     if (err) {
       console.log(err);
     } else {
-      res.render("index",{peliculas: todasPeliculas});
+      res.render("index", { peliculas: todasPeliculas });
     }
   });
 });
 
-app.get("/peliculas/:id", function(req,res){
+app.get("/peliculas/:id", function (req, res) {
   //Encontrar la película con el id suministrado 
-  Pelicula.findById(req.params.id, function(err, peliculaEncontrada){
+  Pelicula.findById(req.params.id).populate("comentario").exec(function(err, peliculaEncontrada){
     if (err) {
       console.log(err);
     } else {
-      res.render("mostrar", {peliculas:peliculaEncontrada});
+      console.log(peliculaEncontrada);
+      res.render("mostrar",{peliculas:peliculaEncontrada});
     }
-  })
+  });
+
   
+
 });
 
 

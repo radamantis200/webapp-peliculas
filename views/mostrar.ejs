@@ -4,4 +4,8 @@
 <img src="<%= peliculas.imagen %>" alt="">
 <p><%= peliculas.descripcion %></p>
 
+<% peliculas.comentario.forEach(function(comentario){ %>
+    <p><strong><%= comentario.autor %> </strong> - <%= comentario.texto %></p>
+<% }); %>
+
 <% include parciales/pie %>
