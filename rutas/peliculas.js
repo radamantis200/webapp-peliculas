@@ -14,12 +14,16 @@ router.get("/peliculas", function (req, res) {
     });
 });
 
-router.post("/peliculas", function (req, res) {
+router.post("/peliculas",estaLoggeado, function (req, res) {
     //Obtener los datos del formulario y agregar películas
     var nombre = req.body.nombre;
     var imagen = req.body.imagen;
     var descripcion = req.body.descripcion;
-    var NuevaPelicula = { nombre: nombre, imagen: imagen, descripcion: descripcion };
+    var autor = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    var NuevaPelicula = { nombre: nombre, imagen: imagen, descripcion: descripcion, autor: autor };
     // Crear un nuevo registro de película y guardarlo en la base de datos
     Pelicula.create(NuevaPelicula, function (err, recienCreada) {
         if (err) {
@@ -31,7 +35,7 @@ router.post("/peliculas", function (req, res) {
     })
 });
 
-router.get("/peliculas/nueva", function (req, res) {
+router.get("/peliculas/nueva",estaLoggeado, function (req, res) {
     res.render("películas/nueva");
 });
 
@@ -46,5 +50,13 @@ router.get("/peliculas/:id", function (req, res) {
         }
     });
 });
+
+//Middleware
+function estaLoggeado(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
 
 module.exports = router;

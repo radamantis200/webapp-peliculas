@@ -9,6 +9,13 @@ var peliculaSchema = new mongoose.Schema({
         default: "Es una buena pelicula",
         required: [true, 'La descripcion es obligatoria!'],
     },
+    autor: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Usuario"
+        },
+        username: String
+    },
     comentario: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comentario"
