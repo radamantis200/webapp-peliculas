@@ -3,6 +3,7 @@ var app = express();
 var bodyParse = require("body-parser");
 var mongoose = require("mongoose");
 var Pelicula = require("./model/peliculas");
+var Comentario = require("./model/comentario");
 var poblarDB = require("./semillas");
 
 poblarDB();
@@ -51,7 +52,7 @@ app.post("/peliculas", function (req, res) {
 });
 
 app.get("/peliculas/nueva", function (req, res) {
-  res.render("nueva");
+  res.render("películas/nueva");
 });
 
 app.get("/peliculas", function (req, res) {
@@ -60,7 +61,7 @@ app.get("/peliculas", function (req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.render("index", { peliculas: todasPeliculas });
+      res.render("películas/index", { peliculas: todasPeliculas });
     }
   });
 });
@@ -72,7 +73,7 @@ app.get("/peliculas/:id", function (req, res) {
       console.log(err);
     } else {
       console.log(peliculaEncontrada);
-      res.render("mostrar",{peliculas:peliculaEncontrada});
+      res.render("películas/mostrar",{peliculas:peliculaEncontrada});
     }
   });
 
@@ -80,6 +81,35 @@ app.get("/peliculas/:id", function (req, res) {
 
 });
 
+
+app.get("/peliculas/:id/comentarios/nuevo",function(req,res){
+  Pelicula.findById(req.params.id, function(err,pelicula){
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("comentarios/nuevo",{pelicula: pelicula});
+    }
+  });
+});
+
+app.post("/peliculas/:id/comentarios", function(req,res){
+  Pelicula.findById(req.params.id, function(err,pelicula){
+    if (err) {
+      console.log(err);
+      res.redirect("/peliculas");
+    } else {
+      Comentario.create(req.body.comentario, function(err,comentario){
+        if (err) {
+          console.log(err);     
+        } else {
+          pelicula.comentario.push(comentario);
+          pelicula.save();
+          res.redirect("/peliculas/" + pelicula._id);
+        }
+      });
+    }
+  });
+});
 
 app.listen(3000, function () {
   console.log("Servidor de peliculas iniciado!!");

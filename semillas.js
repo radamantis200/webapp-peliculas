@@ -7,7 +7,7 @@ var datos = [
 
 var moongose = require("mongoose");
 var Pelicula = require("./model/peliculas.js");
-var comentario = require("./model/comentario.js");
+var Comentario = require("./model/comentario.js");
 
 function poblarDB() {
     Pelicula.remove({}, function (err) {
@@ -22,7 +22,7 @@ function poblarDB() {
                     } else {
                         console.log("Pelicula agregada!");
                         //Agregar Comentario
-                        comentario.create({
+                        Comentario.create({
                             texto: "Esta Pelicula esta Genial",
                             autor: "katherine"
                         }, function (err, comentario) {

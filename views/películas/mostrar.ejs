@@ -1,11 +1,15 @@
-<% include parciales/encabezado %>
+<% include ../parciales/encabezado %>
 
 <h1><%= peliculas.nombre %></h1>
 <img src="<%= peliculas.imagen %>" alt="">
 <p><%= peliculas.descripcion %></p>
 
+<p>
+    <a class="btn btn-success" href="/peliculas/<%= peliculas._id %>/comentarios/nuevo">Agregar Nuevo Comentario</a>
+</p>
+
 <% peliculas.comentario.forEach(function(comentario){ %>
     <p><strong><%= comentario.autor %> </strong> - <%= comentario.texto %></p>
 <% }); %>
 
-<% include parciales/pie %>
+<% include ../parciales/pie %>
