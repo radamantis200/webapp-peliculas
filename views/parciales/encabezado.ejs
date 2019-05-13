@@ -16,9 +16,13 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/">Iniciar Sesión</a> </li>
-                    <li><a href="/">Registrase</a></li>
-                    <li><a href="/">Cerrar sesión</a></li>
+                    <% if(!usuarioActual){ %>
+                    <li><a href="/login">Iniciar Sesión</a> </li>
+                    <li><a href="/registro">Registrase</a></li>
+                    <% } else { %>
+                    <li><a href="#"> Sesión de <%= usuarioActual.username %></a></li>
+                    <li><a href="/logout">Cerrar sesión</a></li>
+                    <% } %>
                 </ul>
             </div>
 

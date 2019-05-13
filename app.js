@@ -2,37 +2,40 @@ var express = require("express");
 var app = express();
 var bodyParse = require("body-parser");
 var mongoose = require("mongoose");
+var passport = require("passport");
+var estratLocal = require("passport-local");
 var Pelicula = require("./model/peliculas");
 var Comentario = require("./model/comentario");
+var Usuario = require("./model/usuario");
 var poblarDB = require("./semillas");
 
 poblarDB();
 mongoose.connect("mongodb://localhost/peliculas");
-
-
-
-// Pelicula.create({ 
-//   nombre: "X-Men: Apocalypse", 
-//   imagen: "https://upload.wikimedia.org/wikipedia/en/0/04/X-Men_-_Apocalypse.jpg" ,
-//   descripcion: "X-Men: Apocalipsis es una película de acción, aventuras y superhéroes de 2016 perteneciente a la saga fílmica de X-Men"}, 
-//   function (err, pelicula) {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log("Nueva película agregada: ");
-//       console.log(pelicula);
-//     }
-// });
 
 app.use(bodyParse.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
+app.use(require("express-session")({
+  secret: "Esta linea ya sabemos para que es!",
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new estratLocal(Usuario.authenticate()));
+passport.serializeUser(Usuario.serializeUser());
+passport.deserializeUser(Usuario.deserializeUser());
+app.use(function(req,res,next){
+  res.locals.usuarioActual = req.user;
+  next();
+})
+
+
 app.get("/", function (req, res) {
   res.render("inicio");
 });
-
 
 
 app.post("/peliculas", function (req, res) {
@@ -62,7 +65,7 @@ app.get("/peliculas", function (req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.render("películas/index", { peliculas: todasPeliculas });
+      res.render("películas/index", { peliculas: todasPeliculas, usuarioActual: req.user });
     }
   });
 });
@@ -83,7 +86,7 @@ app.get("/peliculas/:id", function (req, res) {
 });
 
 
-app.get("/peliculas/:id/comentarios/nuevo",function(req,res){
+app.get("/peliculas/:id/comentarios/nuevo",estaLoggeado,function(req,res){
   Pelicula.findById(req.params.id, function(err,pelicula){
     if (err) {
       console.log(err);
@@ -93,7 +96,7 @@ app.get("/peliculas/:id/comentarios/nuevo",function(req,res){
   });
 });
 
-app.post("/peliculas/:id/comentarios", function(req,res){
+app.post("/peliculas/:id/comentarios",estaLoggeado, function(req,res){
   Pelicula.findById(req.params.id, function(err,pelicula){
     if (err) {
       console.log(err);
@@ -111,6 +114,46 @@ app.post("/peliculas/:id/comentarios", function(req,res){
     }
   });
 });
+
+app.get("/registro",function(req,res){
+   res.render("registro");
+});
+
+app.post("/registro",function(req,res){
+  var usuarioNuevo = new Usuario({username: req.body.username});
+  Usuario.register(usuarioNuevo, req.body.password, function(err,usuario){
+    if (err) {
+      console.log(err);
+      return res.render("registro");
+    }
+    passport.authenticate("local")(req,res,function(){
+      res.redirect("/peliculas");
+    });
+  });
+});
+
+app.get("/login",function(req,res){
+  res.render("login");
+});
+
+app.post("/login", passport.authenticate("local",{
+  successRedirect: "/peliculas",
+  failureRedirect: "/login"
+}), function(req,res){ 
+});
+
+app.get("/logout",function(req,res){
+  req.logout();
+  res.redirect("/peliculas");
+});
+
+//Middleware
+function estaLoggeado(req,res,next){
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
 
 app.listen(3000, function () {
   console.log("Servidor de peliculas iniciado!!");
