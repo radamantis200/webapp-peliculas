@@ -24,6 +24,12 @@ router.post("/peliculas/:id/comentarios", estaLoggeado, function (req, res) {
                 if (err) {
                     console.log(err);
                 } else {
+                    //Agregamos el username y el id al comentario
+                    comentario.autor.id = req.user._id;
+                    comentario.autor.username = req.user.username;
+                    //Guardar Comentario
+                    comentario.save();
+                    //Asociar el comentario nuevo a una pelicula
                     pelicula.comentario.push(comentario);
                     pelicula.save();
                     res.redirect("/peliculas/" + pelicula._id);

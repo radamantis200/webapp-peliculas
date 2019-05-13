@@ -10,36 +10,36 @@ var Pelicula = require("./model/peliculas.js");
 var Comentario = require("./model/comentario.js");
 
 function poblarDB() {
-    Pelicula.remove({}, function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Películas eliminadas");
-            datos.forEach(function (semilla) {
-                Pelicula.create(semilla, function (err, datos) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("Pelicula agregada!");
-                        //Agregar Comentario
-                        Comentario.create({
-                            texto: "Esta Pelicula esta Genial",
-                            autor: "katherine"
-                        }, function (err, comentario) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                
-                                datos.comentario.push(comentario);
-                                datos.save();
-                                console.log("Comentario nuevo agregado!");
-                            }
-                        });
-                    }
-                });
-            });
-        }
-    })
+    // Pelicula.remove({}, function (err) {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log("Películas eliminadas");
+    //         datos.forEach(function (semilla) {
+    //             Pelicula.create(semilla, function (err, datos) {
+    //                 if (err) {
+    //                     console.log(err);
+    //                 } else {
+    //                     console.log("Pelicula agregada!");
+    //                     //Agregar Comentario
+    //                     Comentario.create({
+    //                         texto: "Esta Pelicula esta Genial",
+    //                         autor: "katherine"
+    //                     }, function (err, comentario) {
+    //                         if (err) {
+    //                             console.log(err);
+    //                         } else {
+
+    //                             datos.comentario.push(comentario);
+    //                             datos.save();
+    //                             console.log("Comentario nuevo agregado!");
+    //                         }
+    //                     });
+    //                 }
+    //             });
+    //         });
+    //     }
+    // });
 }
 
 module.exports = poblarDB;

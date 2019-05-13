@@ -29,7 +29,7 @@
                 <% peliculas.comentario.forEach(function(comentario){ %>
                 <div class="row">
                     <div class="col-md-12">
-                        <strong><%= comentario.autor %></strong>
+                        <strong><%= comentario.autor.username %></strong>
                         <span class="pull-right">Hace dos dias</span>
                         <p><%= comentario.texto %></p>
                     </div>

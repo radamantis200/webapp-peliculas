@@ -13,7 +13,7 @@ var rutasComentario = require("./rutas/comentarios");
 var rutasPeliculas = require("./rutas/peliculas");
 var rutasIndex = require("./rutas/index");
 
-poblarDB();
+// poblarDB();
 mongoose.connect("mongodb://localhost/peliculas");
 
 app.use(bodyParse.urlencoded({ extended: true }));
