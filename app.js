@@ -27,6 +27,7 @@ mongoose.connect("mongodb://localhost/peliculas");
 app.use(bodyParse.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 
 app.get("/", function (req, res) {
   res.render("inicio");

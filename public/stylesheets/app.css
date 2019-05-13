@@ -1,0 +1,10 @@
+.thumbnail {
+    padding: 0;
+}
+.thumbnail .caption-full {
+    padding: 9px;
+}
+#pie {
+    font-weight: 700;
+    text-align: center;
+}
