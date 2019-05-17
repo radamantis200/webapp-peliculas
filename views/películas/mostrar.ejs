@@ -19,6 +19,12 @@
                     <h4><a> <%= peliculas.nombre %></a></h4>
                     <p><%= peliculas.descripcion %> </p>
                     <p><em>Agregado por: <strong> <%= peliculas.autor.username %> </strong> </em></p>
+                    <% if(usuarioActual && peliculas.autor.id.equals(usuarioActual._id)) { %>
+                    <a class="btn btn-warning" href="/peliculas/<%= peliculas._id %>/editar">Editar</a>
+                    <form id="eliminarPelicula" action="/peliculas/<%= peliculas._id %>?_method=DELETE" method="post">
+                        <button class="btn btn-danger">Eliminar</button>
+                    </form>
+                    <% } %>
                 </div>
             </div>
             <div class="well">
@@ -33,6 +39,17 @@
                         <strong><%= comentario.autor.username %></strong>
                         <span class="pull-right">Hace dos dias</span>
                         <p><%= comentario.texto %></p>
+                        <% if(usuarioActual && comentario.autor.id.equals(usuarioActual._id)) { %>
+                        <a class="btn btn-xs btn-warning"
+                            href="/peliculas/<%= peliculas._id %>/comentarios/<%= comentario._id %>/editar">
+                            Editar
+                        </a>
+                        <form id="eliminarComentario"
+                            action="/peliculas/<%= peliculas._id %>/comentarios/<%= comentario._id %>?_method=DELETE"
+                            method="post">
+                            <input type="submit" class="btn btn-xs btn-danger" value="Eliminar">
+                        </form>
+                        <% } %>
                     </div>
                 </div>
                 <% }); %>

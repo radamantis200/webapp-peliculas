@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var Pelicula = require("../model/peliculas");
+var middleware = require("../middleware");
 
 
 router.get("/peliculas", function (req, res) {
@@ -14,7 +15,7 @@ router.get("/peliculas", function (req, res) {
     });
 });
 
-router.post("/peliculas",estaLoggeado, function (req, res) {
+router.post("/peliculas",middleware.estaLoggeado, function (req, res) {
     //Obtener los datos del formulario y agregar películas
     var nombre = req.body.nombre;
     var imagen = req.body.imagen;
@@ -35,7 +36,7 @@ router.post("/peliculas",estaLoggeado, function (req, res) {
     })
 });
 
-router.get("/peliculas/nueva",estaLoggeado, function (req, res) {
+router.get("/peliculas/nueva", middleware.estaLoggeado, function (req, res) {
     res.render("películas/nueva");
 });
 
@@ -51,12 +52,34 @@ router.get("/peliculas/:id", function (req, res) {
     });
 });
 
-//Middleware
-function estaLoggeado(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
-}
+router.get("/peliculas/:id/editar",middleware.verificarDuenoPelicula, function (req, res) {
+    // Verificar si hay alguien con sesion abierta
+    Pelicula.findById(req.params.id, function (err, peliculaEncontrada) {
+        res.render("películas/editar", { pelicula: peliculaEncontrada })
+    });
+});
+
+router.put("/peliculas/:id",middleware.verificarDuenoPelicula, function (req, res) {
+    Pelicula.findByIdAndUpdate(req.params.id, req.body.pelicula, function (err, peliculaActualizada) {
+        if (err) {
+            res.render("/peliculas");
+        } else {
+            res.redirect("/peliculas/" + req.params.id);
+        }
+    });
+});
+
+router.delete("/peliculas/:id",middleware.verificarDuenoPelicula, function (req, res) {
+    Pelicula.findByIdAndRemove(req.params.id, function (err) {
+        if (err) {
+            res.redirect("/peliculas");
+        } else {
+            res.redirect("/peliculas");
+        }
+    });
+});
+
+
+
 
 module.exports = router;

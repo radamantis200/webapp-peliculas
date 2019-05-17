@@ -8,3 +8,9 @@
     font-weight: 700;
     text-align: center;
 }
+#eliminarPelicula{
+    display: inline;
+}
+#eliminarComentario{
+    display: inline;
+}

@@ -4,6 +4,7 @@ var bodyParse = require("body-parser");
 var mongoose = require("mongoose");
 var passport = require("passport");
 var estratLocal = require("passport-local");
+var methodOverride = require("method-override");
 var Pelicula = require("./model/peliculas");
 var Comentario = require("./model/comentario");
 var Usuario = require("./model/usuario");
@@ -20,6 +21,7 @@ app.use(bodyParse.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 app.use(require("express-session")({
   secret: "Esta linea ya sabemos para que es!",

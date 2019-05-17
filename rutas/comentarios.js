@@ -2,9 +2,10 @@ var express = require("express");
 var router = express.Router();
 var Pelicula = require("../model/peliculas");
 var Comentario = require("../model/comentario");
+var middleware = require("../middleware");
 
 
-router.get("/peliculas/:id/comentarios/nuevo", estaLoggeado, function (req, res) {
+router.get("/peliculas/:id/comentarios/nuevo", middleware.estaLoggeado, function (req, res) {
     Pelicula.findById(req.params.id, function (err, pelicula) {
         if (err) {
             console.log(err);
@@ -14,7 +15,7 @@ router.get("/peliculas/:id/comentarios/nuevo", estaLoggeado, function (req, res)
     });
 });
 
-router.post("/peliculas/:id/comentarios", estaLoggeado, function (req, res) {
+router.post("/peliculas/:id/comentarios", middleware.estaLoggeado, function (req, res) {
     Pelicula.findById(req.params.id, function (err, pelicula) {
         if (err) {
             console.log(err);
@@ -39,12 +40,39 @@ router.post("/peliculas/:id/comentarios", estaLoggeado, function (req, res) {
     });
 });
 
-//Middleware
-function estaLoggeado(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
-}
+router.get("/peliculas/:id/comentarios/:comentario_id/editar",middleware.verificarDuenoComentario, function (req, res) {
+    Comentario.findById(req.params.comentario_id, function (err, comentarioEncontrado) {
+        if (err) {
+            res.redirect("back");
+        } else {
+            res.render("comentarios/editar", { pelicula_id: req.params.id, comentario: comentarioEncontrado })
+        }
+    });
+});
+
+router.put("/peliculas/:id/comentarios/:comentario_id",middleware.verificarDuenoComentario, function (req, res) {
+    Comentario.findByIdAndUpdate(req.params.comentario_id, req.body.comentario, function(err,comentarioActualizado){
+        if (err) {
+            res.redirect("back");
+        } else {
+            res.redirect("/peliculas/"+req.params.id);
+        }
+    });
+});
+
+router.delete("/peliculas/:id/comentarios/:comentario_id",middleware.verificarDuenoComentario, function (req,res){
+    Comentario.findByIdAndRemove(req.params.comentario_id, function (err){
+        if (err) {
+            res.redirect("back");
+        } else {
+            res.redirect("/peliculas/" + req.params.id);
+        }
+    })
+});
+
+
+
+
+
 
 module.exports = router;
